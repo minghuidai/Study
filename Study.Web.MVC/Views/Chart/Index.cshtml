@@ -1,0 +1,36 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+<h2>
+    Canvas Chart
+</h2>
+
+<canvas id="c" width="600" height="400"></canvas>
+
+
+<script>
+    
+    var c = document.getElementById('c');
+    var ctx = c.getContext('2d');
+    drawRect(c, ctx);
+   
+
+
+
+    // draw rect in canvas
+    function drawRect(canvas, context) {
+        context.beginPath();
+        context.rect(0, 0, canvas.width, canvas.height);
+        context.fillStyle = 'yellow';
+        context.fill();
+        context.lineWidth = 1;
+        context.strokeStyle = 'black';
+        context.stroke();
+    }
+</script>
+
