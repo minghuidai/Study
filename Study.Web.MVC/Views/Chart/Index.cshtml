@@ -5,32 +5,146 @@
 }
 
 
+<style media="screen" type="text/css">
+    #c {
+        border: 1px solid #cccccc;
+        border-radius: 3px;
+        background-color: #f9f9f9;
+    }
+</style>
+
+
+<script src="~/Scripts/jquery-1.10.2.js"></script>
+
+
+
 
 <h2>
     Canvas Chart
 </h2>
 
-<canvas id="c" width="600" height="400"></canvas>
+
+@*<script>
+    var c = document.getElementById('a');
+    var ctx = c.getContext('2d');
+    //drawRect(c, ctx);
+</script>*@
 
 
 <script>
-    
-    var c = document.getElementById('c');
-    var ctx = c.getContext('2d');
-    drawRect(c, ctx);
-   
+    var data = [120, 100, 140];
+    var labels = ["200", "100", "140"];
+    var colors = ["#FFDAB9", "#E6E6FA", "#E0FFFF"];
+
+    $(function () {
+        var c = document.getElementById("c");
+        var ctx = c.getContext("2d");
+
+        drawSegment(c, ctx, 0);
+        drawSegment(c, ctx, 1);
+        drawSegment(c, ctx, 2);
+    });
 
 
+    function drawSegment(canvas, context, i) {
+        context.save();
+        var centerX = Math.floor(canvas.width / 2);
+        var centerY = Math.floor(canvas.height / 2);
+        radius = Math.floor(canvas.width / 3);
 
-    // draw rect in canvas
-    function drawRect(canvas, context) {
+        var startingAngle = degreesToRadians(sumTo(data, i));
+        var arcSize = degreesToRadians(data[i]);
+        var endingAngle = startingAngle + arcSize;
+
         context.beginPath();
-        context.rect(0, 0, canvas.width, canvas.height);
-        context.fillStyle = 'yellow';
+        context.moveTo(centerX, centerY);
+        context.arc(centerX, centerY, radius,
+                    startingAngle, endingAngle, false);
+        context.closePath();
+
+        context.fillStyle = colors[i];
         context.fill();
-        context.lineWidth = 1;
-        context.strokeStyle = 'black';
-        context.stroke();
+
+        context.restore();
+
+        drawSegmentLabel(canvas, context, i);
     }
+
+
+    function degreesToRadians(degrees) {
+        return (degrees * Math.PI) / 180;
+    }
+
+
+    function sumTo(a, i) {
+        var sum = 0;
+        for (var j = 0; j < i; j++) {
+            sum += a[j];
+        }
+        return sum;
+    }
+
+
+    function drawSegmentLabel(canvas, context, i) {
+        context.save();
+        var x = Math.floor(canvas.width / 2);
+        var y = Math.floor(canvas.height / 2);
+        var angle = degreesToRadians(sumTo(data, i));
+
+        context.translate(x, y);
+        context.rotate(angle);
+        var dx = Math.floor(canvas.width * 0.5) - 10;
+        var dy = Math.floor(canvas.height * 0.05);
+
+        context.textAlign = "right";
+        var fontSize = Math.floor(canvas.height / 25);
+        context.font = fontSize + "pt Helvetica";
+
+        context.fillText(data[i], dx, dy);
+
+        context.restore();
+    }
+
+
+    function drawRect(ctx) {
+        ctx.fillStyle = "#ff0000";
+        ctx.fillRect(0, 0, 150, 75);
+    };
+
+
+    function drawLine(ctx) {
+        for (var x = 0.5; x < 500; x += 10) {
+            ctx.moveTo(x, 0);
+            ctx.lineTo(x, 375);
+        }
+        ctx.strokeStyle = "#cccccc";
+        ctx.stroke();
+    };
+
+
+    function drawArrow(ctx) {
+        ctx.beginPath();
+
+        ctx.moveTo(0, 40);
+        ctx.lineTo(240, 40);
+        ctx.moveTo(260, 40);
+        ctx.lineTo(500, 40);
+        ctx.moveTo(495, 35);
+        ctx.lineTo(500, 40);
+        ctx.lineTo(495, 45);
+
+        ctx.strokeStyle = "#cccccc";
+        ctx.stroke();
+    };
+
+
+    function drawText(context) {
+        context.font = "bold 12px sans-serif";
+        context.fillText("x", 248, 43);
+        context.fillText("y", 58, 165);
+    }
+
 </script>
 
+
+<canvas id="c" width="600" height="400"></canvas>
